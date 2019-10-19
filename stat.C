@@ -4,13 +4,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/sysmacros.h>
+#include <iostream>
+#include <iomanip>
+
+using namespace std;
 
 int main(int argc, char *argv[])
 {
    struct stat sb;
 
    if (argc != 2) {
-       fprintf(stderr, "Usage: %s <pathname>\n", argv[0]);
+       cerr <<  "Usage: " << argv[0] << " <pathname>" << endl;
        exit(EXIT_FAILURE);
    }
 
@@ -19,41 +23,27 @@ int main(int argc, char *argv[])
        exit(EXIT_FAILURE);
    }
 
-   printf("ID of containing device:  [%lx,%lx]\n",
-	(long) major(sb.st_dev), (long) minor(sb.st_dev));
+   cout << "ID of containing device: "<< major(sb.st_dev) << "," << minor(sb.st_dev) << endl;
 
-   printf("File type:                ");
+   cout << "File type: " << endl;
 
    switch (sb.st_mode & S_IFMT) {
-   case S_IFBLK:  printf("block device\n");            break;
-   case S_IFCHR:  printf("character device\n");        break;
-   case S_IFDIR:  printf("directory\n");               break;
-   case S_IFIFO:  printf("FIFO/pipe\n");               break;
-   case S_IFLNK:  printf("symlink\n");                 break;
-   case S_IFREG:  printf("regular file\n");            break;
-   case S_IFSOCK: printf("socket\n");                  break;
-   default:       printf("unknown?\n");                break;
+	case S_IFDIR:  
+		cout << "directory" << endl;
+	   	break;
+	case S_IFLNK:  
+	   	cout << "symbolic link" << endl;
+	   	break;
+   	case S_IFREG: 
+		cout << "regular file" << endl;       
+		break;
+     	default:      
+	       cout << "something else" << endl;
    }
-
-   printf("I-node number:            %ld\n", (long) sb.st_ino);
-
-   printf("Mode:                     %lo (octal)\n",
-	   (unsigned long) sb.st_mode);
-
-   printf("Link count:               %ld\n", (long) sb.st_nlink);
-   printf("Ownership:                UID=%ld   GID=%ld\n",
-	   (long) sb.st_uid, (long) sb.st_gid);
-
-   printf("Preferred I/O block size: %ld bytes\n",
-	   (long) sb.st_blksize);
-   printf("File size:                %lld bytes\n",
-	   (long long) sb.st_size);
-   printf("Blocks allocated:         %lld\n",
-	   (long long) sb.st_blocks);
-
-   printf("Last status change:       %s", ctime(&sb.st_ctime));
-   printf("Last file access:         %s", ctime(&sb.st_atime));
-   printf("Last file modification:   %s", ctime(&sb.st_mtime));
+   
+   cout << setw(13) << "inodenumber: " << sb.st_ino << endl; 
+   cout << setw(13) << "Mode: " << sb.st_mode << endl;
+   cout << setw(13) << "Owner: " << sb.st_uid << endl;
 
    exit(EXIT_SUCCESS);
 }
